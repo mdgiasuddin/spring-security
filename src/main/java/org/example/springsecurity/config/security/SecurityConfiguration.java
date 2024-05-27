@@ -63,7 +63,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             AuthenticationProvider authenticationProvider,
-            JwtAuthenticationFilter authenticationFilter
+            JwtAuthenticationFilter authenticationFilter,
+            AppAuthEntryPoint authEntryPoint
     ) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -81,8 +82,8 @@ public class SecurityConfiguration {
                 )
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(e -> e.authenticationEntryPoint(authEntryPoint))
                 .build();
-
     }
 
     @Bean
