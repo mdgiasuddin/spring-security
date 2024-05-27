@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,29 +32,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
-
         final String authHeader = request.getHeader(AUTHORIZATION);
         log.info("API path: {}", requestURI);
+
         if (authHeader == null || !authHeader.startsWith(TOKEN_TYPE)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         final String accessToken = authHeader.substring(TOKEN_TYPE.length());
-        try {
-            UserDetails userDetails = jwtService.extractUserDetails(accessToken);
+        UserDetails userDetails = jwtService.extractUserDetails(accessToken);
 
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-            );
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (Exception e) {
-            throw new BadCredentialsException(e.getMessage());
-        }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
-
     }
 }
