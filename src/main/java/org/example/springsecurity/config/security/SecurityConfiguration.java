@@ -92,7 +92,6 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain jwtSecurityFilterChain(
             HttpSecurity http,
-//            AuthenticationProvider authenticationProvider,
             JwtAuthenticationFilter authenticationFilter,
             AppAuthEntryPoint authEntryPoint
     ) throws Exception {
@@ -111,7 +110,6 @@ public class SecurityConfiguration {
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-//                .authenticationProvider(authenticationProvider)
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(e -> e.authenticationEntryPoint(authEntryPoint))
                 .build();
@@ -121,7 +119,6 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain apiKeySecurityFilterChain(
             HttpSecurity http,
-//            AuthenticationProvider authenticationProvider,
             ApiKeyAuthenticationFilter authenticationFilter,
             AppAuthEntryPoint authEntryPoint
     ) throws Exception {
@@ -140,7 +137,6 @@ public class SecurityConfiguration {
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-//                .authenticationProvider(authenticationProvider)
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(e -> e.authenticationEntryPoint(authEntryPoint))
                 .build();
