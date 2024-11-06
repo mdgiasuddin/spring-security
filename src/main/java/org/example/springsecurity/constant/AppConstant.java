@@ -6,5 +6,6 @@ public class AppConstant {
 
     }
 
-    public static final String TOKEN_TYPE = "Bearer ";
+    public static final String BEARER = "Bearer ";
+    public static final String X_API_KEY = "X-Api-Key ";
 }

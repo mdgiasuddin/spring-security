@@ -39,6 +39,9 @@ public class User implements UserDetails {
     @Column(nullable = false, columnDefinition = "varchar(60)")
     private String password;
 
+    @Column(nullable = false, unique = true, columnDefinition = "varchar(32)")
+    private String apiKey;
+
     @Column(nullable = false, columnDefinition = "varchar(10)")
     private String role;
 

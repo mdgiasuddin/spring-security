@@ -3,9 +3,11 @@ package org.example.springsecurity.config.security;
 import org.example.springsecurity.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -59,19 +61,19 @@ public class SecurityConfiguration {
         return configuration.getAuthenticationManager();
     }
 
+    @Order(1)
     @Bean
-    public SecurityFilterChain securityFilterChain(
+    public SecurityFilterChain basicSecurityFilterChain(
             HttpSecurity http,
-            AuthenticationProvider authenticationProvider,
-            JwtAuthenticationFilter authenticationFilter,
             AppAuthEntryPoint authEntryPoint
     ) throws Exception {
         return http
+                .securityMatcher("/api/basic-auth/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> corsConfigurationSource())
                 .authorizeHttpRequests(
                         auth -> auth.requestMatchers(
-                                        "/api/auth/login"
+                                        "/api/basic-auth/login"
                                 )
                                 .permitAll()
                                 .anyRequest()
@@ -80,7 +82,65 @@ public class SecurityConfiguration {
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .authenticationProvider(authenticationProvider)
+                .httpBasic(Customizer.withDefaults())
+                .formLogin(AbstractHttpConfigurer::disable)
+                .exceptionHandling(e -> e.authenticationEntryPoint(authEntryPoint))
+                .build();
+    }
+
+    @Order(2)
+    @Bean
+    public SecurityFilterChain jwtSecurityFilterChain(
+            HttpSecurity http,
+//            AuthenticationProvider authenticationProvider,
+            JwtAuthenticationFilter authenticationFilter,
+            AppAuthEntryPoint authEntryPoint
+    ) throws Exception {
+        return http
+                .securityMatcher("/api/jwt-auth/**")
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> corsConfigurationSource())
+                .authorizeHttpRequests(
+                        auth -> auth.requestMatchers(
+                                        "/api/jwt-auth/login"
+                                )
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated()
+                )
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+//                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(e -> e.authenticationEntryPoint(authEntryPoint))
+                .build();
+    }
+
+    @Order(3)
+    @Bean
+    public SecurityFilterChain apiKeySecurityFilterChain(
+            HttpSecurity http,
+//            AuthenticationProvider authenticationProvider,
+            ApiKeyAuthenticationFilter authenticationFilter,
+            AppAuthEntryPoint authEntryPoint
+    ) throws Exception {
+        return http
+                .securityMatcher("/api/api-key-auth/**")
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> corsConfigurationSource())
+                .authorizeHttpRequests(
+                        auth -> auth.requestMatchers(
+                                        "/api/api-key-auth/login"
+                                )
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated()
+                )
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+//                .authenticationProvider(authenticationProvider)
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(e -> e.authenticationEntryPoint(authEntryPoint))
                 .build();

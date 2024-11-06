@@ -5,7 +5,7 @@ import org.example.springsecurity.config.security.JwtService;
 import org.example.springsecurity.model.dto.request.LoginRequest;
 import org.example.springsecurity.model.dto.response.LoginResponse;
 import org.example.springsecurity.model.entity.User;
-import org.example.springsecurity.service.AuthenticationService;
+import org.example.springsecurity.service.JwtAuthService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class JwtAuthServiceImpl implements JwtAuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;

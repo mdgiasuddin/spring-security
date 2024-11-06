@@ -19,7 +19,6 @@ public class AppAuthEntryPoint implements AuthenticationEntryPoint {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
 
-        String message = "Error! Invalid access token or access denied.";
         String timestamp = ZonedDateTime.now(ZoneId.of("Asia/Dhaka"))
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ssa z"));
 
@@ -29,6 +28,6 @@ public class AppAuthEntryPoint implements AuthenticationEntryPoint {
                     "timestamp" : "%s"
                 }""";
 
-        response.getOutputStream().println(String.format(jsonPayload, message, timestamp));
+        response.getOutputStream().println(String.format(jsonPayload, exception.getMessage(), timestamp));
     }
 }
