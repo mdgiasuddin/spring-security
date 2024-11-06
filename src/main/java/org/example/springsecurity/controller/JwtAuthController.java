@@ -23,21 +23,21 @@ public class JwtAuthController {
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody @Valid LoginRequest request) {
-        log.info("JwtApiController: Login request: {}", request);
+        log.info("JwtAuthController: Login request: {}", request);
         return jwtAuthService.login(request);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/admin")
     public String greetAdmin() {
-        log.info("JwtApiController: greetAdmin");
+        log.info("JwtAuthController: greetAdmin");
         return "Hello Admin! Welcome.";
     }
 
     @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/user")
     public String greetUser() {
-        log.info("JwtApiController: greetUser");
+        log.info("JwtAuthController: greetUser");
         return "Hello User! Welcome.";
     }
 }

@@ -16,10 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static org.example.springsecurity.constant.AppConstant.X_API_KEY;
-import static org.example.springsecurity.constant.AppConstant.BEARER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
@@ -39,7 +37,6 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
         log.info("ApiKeyAuthenticationFilter: API path: {}", requestURI);
 
         if (authHeader == null || !authHeader.startsWith(X_API_KEY)) {
-            log.info("ApiKeyAuthenticationFilter: NULL");
             filterChain.doFilter(request, response);
             return;
         }
